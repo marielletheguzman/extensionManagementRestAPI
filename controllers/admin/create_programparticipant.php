@@ -30,7 +30,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $jwt = $headers['Authorization'];
             $secretKey = "labanLang";
             $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
-                
+            
+            
             $adminObj->program_id = $data->program_id;
             $adminObj->participant = $data->participant;
             $adminObj->entity = $data->entity;

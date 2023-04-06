@@ -15,6 +15,7 @@
 
         //add program members
         public $program_id;
+        public $user_id;
         public $name;
         public $position;
 
@@ -56,6 +57,7 @@
             $this->programparticipant = "programparticipant";
             $this->admin_account = "admin_account";
             $this->extensionPartner = "extensionpartner";
+            $this->userstbl = "users";
         }
 
         
@@ -93,16 +95,17 @@
             }
         // to add program members inside extension program
             public function createProgramMembers(){
-                $query = "INSERT INTO ". $this->programmembers. " SET program_id=?, name=?, position=?";
+                $query = "INSERT INTO ". $this->programmembers. " SET program_id=?, name=?, position=?, user_id=?";
                 $progMember = $this->conn->prepare($query);
 
                 //sanitize
                 $program_id = htmlspecialchars(strip_tags($this->program_id));
                 $name = htmlspecialchars(strip_tags($this->name));
                 $position = htmlspecialchars(strip_tags($this->position));
+                $user_id = htmlspecialchars(strip_tags($this->user_id));
 
                 //to bind!
-                $progMember->bind_param("iss", $this->program_id, $this->name, $this->position);
+                $progMember->bind_param("issi", $this->program_id, $this->name, $this->position, $this->user_id);
                 if($progMember->execute()){
                     return true;
                 }else{
@@ -169,6 +172,12 @@
 
             }
 
+            public function listOfPendingAccounts(){
+                $query = "SELECT * FROM ".$this->userstbl." WHERE isApprove = 'No'";
+                $pending = $this->conn->prepare($query);
+                $pending->execute();
+                return $pending->get_result();
+            }
 
 
     }

@@ -48,6 +48,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $aud = "myusers";
                 $adminArrData = array(
                     "email" =>  $userObj['email'],
+                    "id" => $userObj['id']
                 );
 
                 //secretkey::::::::

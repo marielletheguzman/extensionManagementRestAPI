@@ -25,13 +25,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $headers = getallheaders();
 
 
-    if(!empty($data->program_id)&& !empty($data->name) && !empty($data->position)){
+    if(!empty($data->program_id)&& !empty($data->name) && !empty($data->position) && !empty($data->user_id)){
 
         try{
+
+ 
             $jwt = $headers['Authorization'];
             $secretKey = "labanLang";
             $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
-            
+
             $username = $decodedData->data->username;
           
             
@@ -39,6 +41,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $adminObj->program_id = $data->program_id;
             $adminObj->name = $data->name;
             $adminObj->position = $data->position;
+            $adminObj->user_id = $data->user_id;
             
             if($adminObj->createProgramMembers()){
                 http_response_code(200);
@@ -58,7 +61,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             http_response_code(500);
             echo json_encode(array(
                 "status" => 0,
-                "message" => $ex->getMessage()
+                "message" => "Unauthorized user"
                 ));
         
         }

@@ -82,18 +82,20 @@ class Users{
         }
         return array();
     }
-
-    public function updateUser($userId){
-        $query = "UPDATE ".$this->users." SET fullName= ?, email =?, position= ?, password= ?, profilePicture= ? WHERE userId = ?";
-        $userObj = $this->conn->prepare($query);
-        $userObj->bind_param("sssssi", $this->fullName, $this->email, $this->position,$this->password,$this->profilePicture, $userId);
     
+    public function  updateProfile(){
+        $query = "UPDATE ".$this->users." SET fullname = ?, email = ?, position = ?, password = ?, profilePicture = ? WHERE id=?";
+        $userObj = $this->conn->prepare($query);
+        $userObj->bind_param("sssssi", $this->fullName, $this->email, $this->position,$this->password,$this->profilePicture, $this->id);
+
         if($userObj->execute()){
             return true;
         }else{
             return false;
         }
     }
+
+    
 
 }
 
