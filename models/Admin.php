@@ -196,6 +196,7 @@
                     return false;
                 }
             }
+
             public function editUserProfile(){
                 $query = "UPDATE ".$this->userstbl." SET fullname = ?, email = ?, position = ?, password = ?, profilePicture = ? WHERE id=?";
                 $adminObj = $this->conn->prepare($query);
@@ -208,4 +209,15 @@
                 }
             }
 
+            public function approveAccount(){
+                $query = "UPDATE users SET isApprove = 'Yes' WHERE id=?";
+                $adminObj = $this->conn->prepare($query);
+                $adminObj->bind_param("i", $this->id);
+
+                if($adminObj->execute()){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
     }
