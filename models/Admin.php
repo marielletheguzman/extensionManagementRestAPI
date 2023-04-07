@@ -185,14 +185,17 @@
                 $pending->execute();
                 return $pending->get_result();
             }
-            
-            public function showUserProfileDetails(){
-                $query = "SELECT * FROM ".$this->userstbl." WHERE id=?";
-                $showDetails = $this->conn->prepare($query);
-                $showDetails->execute();
-                return $showDetails->get_result();
-            }
 
+            public function showUserProfileDetails(){
+                $query = "SELECT * FROM users WHERE id=?";
+                $showDetails = $this->conn->prepare($query);
+                $showDetails->bind_param("i", $this->id);
+                if($showDetails->execute()){
+                    return $showDetails; // return the prepared statement object
+                }else{
+                    return false;
+                }
+            }
             public function editUserProfile(){
                 $query = "UPDATE ".$this->userstbl." SET fullname = ?, email = ?, position = ?, password = ?, profilePicture = ? WHERE id=?";
                 $adminObj = $this->conn->prepare($query);
