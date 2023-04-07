@@ -179,5 +179,30 @@
                 return $pending->get_result();
             }
 
+            public function listOfManageAccount(){
+                $query = "SELECT * FROM ".$this->userstbl." WHERE isApprove = 'Yes'";
+                $pending = $this->conn->prepare($query);
+                $pending->execute();
+                return $pending->get_result();
+            }
+            
+            public function showUserProfileDetails(){
+                $query = "SELECT * FROM ".$this->userstbl." WHERE id=?";
+                $showDetails = $this->conn->prepare($query);
+                $showDetails->execute();
+                return $showDetails->get_result();
+            }
+
+            public function editUserProfile(){
+                $query = "UPDATE ".$this->userstbl." SET fullname = ?, email = ?, position = ?, password = ?, profilePicture = ? WHERE id=?";
+                $adminObj = $this->conn->prepare($query);
+                $adminObj->bind_param("sssssi", $this->fullName, $this->email, $this->position,$this->password,$this->profilePicture, $this->id);
+
+                if($adminObj->execute()){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
 
     }
