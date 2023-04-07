@@ -220,4 +220,16 @@
                     return false;
                 }
             }
+
+            public function declineAccount(){
+                $query = "UPDATE users SET isApprove = 'Declined' WHERE id=?";
+                $adminObj = $this->conn->prepare($query);
+                $adminObj->bind_param("i", $this->id);
+
+                if($adminObj->execute()){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
     }
