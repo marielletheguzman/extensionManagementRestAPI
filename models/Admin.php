@@ -180,7 +180,7 @@
             }
 
             public function listOfManageAccount(){
-                $query = "SELECT * FROM ".$this->userstbl." WHERE isApprove = 'Yes'";
+                $query = "SELECT * FROM ".$this->userstbl." WHERE isApprove = 'Yes' AND isArchive='No'";
                 $pending = $this->conn->prepare($query);
                 $pending->execute();
                 return $pending->get_result();
@@ -223,6 +223,18 @@
 
             public function declineAccount(){
                 $query = "UPDATE users SET isApprove = 'Declined' WHERE id=?";
+                $adminObj = $this->conn->prepare($query);
+                $adminObj->bind_param("i", $this->id);
+
+                if($adminObj->execute()){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+
+            public function archiveAccount(){
+                $query = "UPDATE users SET isArchive = 'Yes' WHERE id=?";
                 $adminObj = $this->conn->prepare($query);
                 $adminObj->bind_param("i", $this->id);
 
