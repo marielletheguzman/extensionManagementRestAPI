@@ -57,7 +57,7 @@ class Users{
     }
 
     public function loginUser(){
-        $query = "SELECT * FROM users WHERE email = ?";
+        $query = "SELECT * FROM users WHERE email = ? and isApprove='Yes'";
         $login = $this->conn->prepare($query);
         $login->bind_param("s", $this->email);
         
@@ -95,8 +95,24 @@ class Users{
         }
     }
 
-    
-
+        public function showListOfAssigned(){
+            $query = "SELECT * FROM users WHERE id=?";
+            $showDetails = $this->conn->prepare($query);
+            $showDetails->bind_param("i", $this->id);
+            if($showDetails->execute()){
+                return $showDetails; // return the prepared statement object
+            }else{
+                return false;
+            }
+        }
+        
+        public function getRelatedPrograms(){
+            $query = "SELECT * FROM programmembers WHERE program_id = ?";
+            $showDetails = $this->conn->prepare($query);
+            $showDetails->bind_param("i", $this->id);
+            $showDetails->execute();
+            return $showDetails->get_result();
+        }
 }
 
 

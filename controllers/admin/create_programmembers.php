@@ -25,7 +25,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $headers = getallheaders();
 
 
-    if(!empty($data->program_id)&& !empty($data->name) && !empty($data->position) && !empty($data->user_id)){
+    if(!empty($data->name) && !empty($data->position) && !empty($data->user_id)){
 
         try{
 
@@ -37,8 +37,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $username = $decodedData->data->username;
           
             
-
-            $adminObj->program_id = $data->program_id;
             $adminObj->name = $data->name;
             $adminObj->position = $data->position;
             $adminObj->user_id = $data->user_id;

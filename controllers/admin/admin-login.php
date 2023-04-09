@@ -46,7 +46,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $iss = "localhost";
                 $iat = time();
                 $nbf = $iat + 2;
-                $exp = $iat + 604800;
+                $exp = $iat + 10000000;
                 $aud = "myusers";
                 $adminArrData = array(
                     "username" =>  $adminData['username'],

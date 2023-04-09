@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $data = json_decode(file_get_contents("php://input"));
     $headers = getallheaders();
 
-    if(!empty($data->program_id)&& !empty($data->participant) && !empty($data->entity)){
+    if(!empty($data->participant) && !empty($data->entity) && !empty($data->user_id)){
     
         try{
             $jwt = $headers['Authorization'];
@@ -35,6 +35,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $adminObj->program_id = $data->program_id;
             $adminObj->participant = $data->participant;
             $adminObj->entity = $data->entity;
+            $adminObj->user_id = $data->user_id;
 
             if($adminObj->createProgramParticipant()){
                 http_response_code(200);

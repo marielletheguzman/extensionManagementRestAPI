@@ -38,7 +38,7 @@
         public $partnerEndDate;
         public $partnerIsExpired;
 
-
+        public $selectedProgramId;
         //connection and table declaration
         private $conn;
         private $extensionprograms;
@@ -95,17 +95,28 @@
             }
         // to add program members inside extension program
             public function createProgramMembers(){
-                $query = "INSERT INTO ". $this->programmembers. " SET program_id=?, name=?, position=?, user_id=?";
+                    $sql = "SELECT * FROM extensionprograms ORDER BY id DESC LIMIT 1";
+                    $result = $this->conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+  
+                    while($row = $result->fetch_assoc()) {
+                        $selectedProgramId= $row["id"];
+                    }
+                    } else {
+         
+                    }
+                    
+                $query = "INSERT INTO programmembers SET program_id=".$selectedProgramId.", name=?, position=?, user_id=?";
                 $progMember = $this->conn->prepare($query);
 
                 //sanitize
-                $program_id = htmlspecialchars(strip_tags($this->program_id));
                 $name = htmlspecialchars(strip_tags($this->name));
                 $position = htmlspecialchars(strip_tags($this->position));
                 $user_id = htmlspecialchars(strip_tags($this->user_id));
 
                 //to bind!
-                $progMember->bind_param("issi", $this->program_id, $this->name, $this->position, $this->user_id);
+                $progMember->bind_param("ssi", $this->name, $this->position, $this->user_id);
                 if($progMember->execute()){
                     return true;
                 }else{
@@ -114,16 +125,27 @@
             }
         //to add program participants
             public function createProgramParticipant(){
-                $query = "INSERT INTO ".$this->programparticipant." SET program_id=?, participant=?, entity=?";
+                $sql = "SELECT * FROM extensionprograms ORDER BY id DESC LIMIT 1";
+                $result = $this->conn->query($sql);
+
+                if ($result->num_rows > 0) {
+
+                while($row = $result->fetch_assoc()) {
+                    $selectedProgramId= $row["id"];
+                }
+                } else {
+     
+                }
+                $query = "INSERT INTO ".$this->programparticipant."  program_id=".$selectedProgramId.", participant=?, entity=?, user_id=?";
                 $progParticipant = $this->conn->prepare($query);
 
                 //sanitize::::
-                $program_id = htmlspecialchars(strip_tags($this->program_id));
                 $participant = htmlspecialchars(strip_tags($this->participant));
                 $entity = htmlspecialchars(strip_tags($this->entity));
+                $user_id = htmlspecialchars(strip_tags($this->user_id));
 
                 //to bind::
-                $progParticipant->bind_param("iss", $this->program_id,$this->participant, $this->entity );
+                $progParticipant->bind_param("isss", $this->participant, $this->entity, $this->user_id );
                 if($progParticipant->execute()){
                     return true;
                 }else{
