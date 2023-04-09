@@ -26,12 +26,17 @@ class Users{
         $userObj = $this->conn->prepare($query);
         $userObj->bind_param("sssss", $this->fullName, $this->email, $this->position,$this->password,$this->profilePicture);
 
+        $date = date("Y-m-dhis");
+        $file_name = $date . "_" . $_FILES['profilePicture']['name'];
+        $target_path = "../assets/" . $file_name;
+        move_uploaded_file($_FILES['profilePicture']['tmp_name'], $target_path);
+    
         if($userObj->execute()){
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
+
 
     public function ifExist(){
         $query = "SELECT * FROM ".$this->users." WHERE email= ?";
@@ -105,7 +110,7 @@ class Users{
                 return false;
             }
         }
-        
+
         public function getRelatedPrograms(){
             $query = "SELECT * FROM programmembers WHERE program_id = ?";
             $showDetails = $this->conn->prepare($query);

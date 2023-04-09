@@ -1,63 +1,85 @@
 <?php
 ini_set("display_errors", 1);
-header ("Access-Control-Allow-Origin: *"); 
-header ("Access-Control-Allow-Methods: POST");
-header ("Content-type: application/json; charset=UTF-8"); 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST");
+header("Content-type: application/json; charset=UTF-8");
+header("Content-type: multipart/form-data; charset=UTF-8");
 
 include_once("../../database/database.php");
 include_once("../../models/Users.php");
 
 $db = new Database();
 $connection = $db->connect();
-$userDetails = new Users ($connection);
+$userDetails = new Users($connection);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $data = json_decode(file_get_contents("php://input"));
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $fullName = $_POST['fullName'];
+  $email = $_POST['email'];
+  $position = $_POST['position'];
+  $password = $_POST['password'];
 
-    if(!empty($data->fullName) && !empty($data->email) &&!empty($data->position) && !empty($data->password) && !empty($data->profilePicture)){
+  // process the uploaded file
+  $profilePicture = null;
+  if (isset($_FILES['profilePicture']) && !empty($_FILES['profilePicture']['name'])) {
+    $fileTmpPath = $_FILES['profilePicture']['tmp_name'];
+    $fileName = $_FILES['profilePicture']['name'];
+    $fileSize = $_FILES['profilePicture']['size'];
+    $fileType = $_FILES['profilePicture']['type'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
 
-        $userObj = new Users($connection); // create a new instance of Users class
-        $userObj->fullName = $data->fullName;
-        $userObj->email = $data->email;
-        $userObj->position = $data->position;
+    // create a unique file name
+    $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
 
-        //convert to hashhh
-        $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
-        $userObj->password = $hashedPassword;
-        $userObj->profilePicture = $data->profilePicture;
+    // move the uploaded file to a new location
+    $uploadFileDir = '../../assets/profile';
+    $dest_path = $uploadFileDir . $newFileName;
+    if(move_uploaded_file($fileTmpPath, $dest_path)) {
+      $profilePicture = $dest_path;
+    }
+  }
 
-        $emailData = $userObj->ifExist();
-        if(!empty($emailData)){
-            http_response_code(500);
-            echo json_encode(array(
-                "status" => "failed",
-                "message" => "Email is already used"
-            ));
-        }else{
+  if (!empty($fullName) && !empty($email) && !empty($position) && !empty($password)) {
 
-            if($userObj->registerUser()){
-                $userObj->addLogRegister();
-                http_response_code(201);
-                echo json_encode(array(
-                    "status" => "success",
-                    "message" => "User registered successfully"
-                ));
-            }else{
-                http_response_code(500);
-                echo json_encode(array(
-                    "status" => "failed",
-                    "message" => "Unable to register user"
-                ));
-            }
-        }
+    $userObj = new Users($connection);
+    $userObj->fullName = $fullName;
+    $userObj->email = $email;
+    $userObj->position = $position;
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $userObj->password = $hashedPassword;
+    $userObj->profilePicture = $newFileName;
 
-    }else{
+    $emailData = $userObj->ifExist();
+    if (!empty($emailData)) {
+      http_response_code(500);
+      echo json_encode(array(
+        "status" => "failed",
+        "message" => "Email is already used"
+      ));
+    } else {
+
+      if ($userObj->registerUser()) {
+        $userObj->addLogRegister();
+        http_response_code(201);
+        echo json_encode(array(
+          "status" => "success",
+          "message" => "User registered successfully"
+        ));
+      } else {
         http_response_code(500);
         echo json_encode(array(
-            "status" => "failed",
-            "message" => "All fields must have"
+          "status" => "failed",
+          "message" => "Unable to register user"
         ));
+      }
     }
+  } else {
+    http_response_code(500);
+    echo json_encode(array(
+      "status" => "failed",
+      "message" => "All fields must have a value"
+    ));
+  }
 }else{
     http_response_code(500);
     echo json_encode(array(
