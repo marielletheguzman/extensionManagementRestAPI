@@ -55,49 +55,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
                     "programID" => $program_id,
                  
         );
+
+        //added extension programs in loop
+        $extProg = "SELECT * FROM extensionprograms WHERE id = $pid ";
+        $res = $connection->query($extProg);
+        
+        while($row = $res->fetch_assoc()) {
+            $id = $row['id'];
+            $programTitle = $row['programTitle'];
+            $programLead = $row['programLead'];
+            $place = $row['place'];
+            $additionalDetails = $row['additionalDetails'];
+            $partner = $row['partner'];
+            $startDate = $row['startDate'];
+            $endDate = $row['endDate'];
+            $extensionProgram[] = array(
+
+                "id" => $id,
+                "programTitle" => $programTitle,
+                "programLead" => $programLead,
+                "place" => $place,
+                "additionalDetails" => $additionalDetails,
+                "partner" => $partner,
+                "startDate" => $startDate,
+                "endDate" => $endDate,   
+    );
+
+        }
     
             }
 
 
-            $extProg = "SELECT * FROM extensionprograms WHERE id = $pid ";
-            $res = $connection->query($extProg);
-            
-            while($row = $res->fetch_assoc()) {
-                $programTitle = $row['programTitle'];
-                $programLead = $row['programLead'];
-                $place = $row['place'];
-                $additionalDetails = $row['additionalDetails'];
-                $partner = $row['partner'];
-                $startDate = $row['startDate'];
-                $endDate = $row['endDate'];
-                $extensionProgram[] = array(
-                    "programTitle" => $programTitle,
-                    "programLead" => $programLead,
-                    "place" => $place,
-                    "additionalDetails" => $additionalDetails,
-                    "partner" => $partner,
-                    "startDate" => $startDate,
-                    "endDate" => $endDate,   
-        );
-    
-            }
 
 
-            $sql = "SELECT * FROM programparticipant WHERE program_id = $pid ";
-            $result = $connection->query($sql);
+
+        //     $sql = "SELECT * FROM programparticipant WHERE program_id = $pid ";
+        //     $result = $connection->query($sql);
     
       
-            while($row = $result->fetch_assoc()) {
-                $user = $row['name'];
-                $position = $row['position'];
-                $user_id = $row['user_id'];
-                $data[] = array(
-                    "user" => $user,
-                    "position" => $position,
-                    "userId" => $user_id,
+        //     while($row = $result->fetch_assoc()) {
+        //         $user = $row['name'];
+        //         $position = $row['position'];
+        //         $user_id = $row['user_id'];
+        //         $data[] = array(
+        //             "user" => $user,
+        //             "position" => $position,
+        //             "userId" => $user_id,
                  
-        );
-    }
+        // );
+    // }
             http_response_code(200);
             echo json_encode(array(
                 "status" => 1,
