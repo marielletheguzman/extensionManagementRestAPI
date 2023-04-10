@@ -152,6 +152,7 @@
                     return false;
                 }
             }
+
         //to add program flow
             public function createProgramFlow(){
                 $query = "INSERT INTO ".$this->programflow." SET eventName=?, eventType=?, program_id=?";
@@ -170,6 +171,31 @@
                     return false;
                 }
             }
+
+        //to add program flow
+        public function relatedFiles(){
+            $sql = "SELECT * FROM extensionprograms ORDER BY id DESC LIMIT 1";
+            $result = $this->conn->query($sql);
+
+            if ($result->num_rows > 0) {
+
+            while($row = $result->fetch_assoc()) {
+                $selectedProgramId= $row["id"];
+            }
+            } else {
+ 
+            }
+
+            $query = "INSERT INTO relatedfiles SET extension_id=".$selectedProgramId.", certificate='', attendance='',invitation=''";
+            $related = $this->conn->prepare($query);
+
+            if($related->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
 
             public function createExtensionPartner(){
                 $query = "INSERT INTO extensionpartner SET partnerName=?, partnerAddress=?, partnerContactPerson=?, partnerContactNumber =?, partnerLogo=?, partnerMoaFile=?, partnerStartDate=?, partnerEndDate=?, 	partnerIsExpired='No'";
@@ -264,6 +290,24 @@
                     return true;
                 }else{
                     return false;
+                }
+            }
+
+            
+            public function showAllPartners() {
+                $query = "SELECT * FROM extensionpartner";
+                $stmt = $this->conn->prepare($query);
+            
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result(); 
+                    $partners = array(); 
+
+                    while ($row = $result->fetch_assoc()) {
+                        $partners[] = $row;
+                    }
+                    return $partners; 
+                } else {
+                    return false; 
                 }
             }
     }
