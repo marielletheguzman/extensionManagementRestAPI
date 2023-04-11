@@ -410,4 +410,17 @@
                 $pending->execute();
                 return $pending->get_result();
             }
+
+
+            public function editAdminProfile(){
+                $query = "UPDATE system_profile SET Logo = ?, WebsiteName=?, ThemeColor=? WHERE id=1";
+                $adminObj = $this->conn->prepare($query);
+                $adminObj->bind_param("sss", $this->Logo, $this->WebsiteName, $this->ThemeColor);
+
+                if($adminObj->execute()){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
     }
