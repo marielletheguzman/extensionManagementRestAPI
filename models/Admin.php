@@ -320,4 +320,31 @@
                 return $showDetails->get_result()->fetch_assoc();
             }
 
+            public function showAllOngoingPartners() {
+                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate >= DATE_ADD(NOW(), INTERVAL 1 DAY);";
+                $stmt = $this->conn->prepare($query);
+            
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result(); 
+                    $partners = array(); 
+
+                    while ($row = $result->fetch_assoc()) {
+                        $partners[] = $row;
+                    }
+                    return $partners; 
+                } else {
+                    return false; 
+                }
+            }
+
+
+            public function getSpecificPartner(){
+                $extProg = "SELECT * FROM extensionpartner WHERE id = ? ";
+                $showDetails = $this->conn->prepare($extProg);
+                $showDetails->bind_param("i", $this->id);
+                $showDetails->execute();
+                return $showDetails->get_result()->fetch_assoc();
+            }
+
+
     }
