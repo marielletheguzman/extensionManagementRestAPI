@@ -321,7 +321,7 @@
             }
 
             public function showAllOngoingPartners() {
-                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate >= DATE_ADD(NOW(), INTERVAL 1 DAY);";
+                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate > DATE_ADD(NOW(), INTERVAL -1 DAY);";
                 $stmt = $this->conn->prepare($query);
             
                 if ($stmt->execute()) {
@@ -347,7 +347,7 @@
             }
 
             public function showAllExpiredPartners() {
-                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate < DATE_ADD(NOW(), INTERVAL 1 DAY);";
+                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate > DATE_ADD(NOW(), INTERVAL -1 DAY);";
                 $stmt = $this->conn->prepare($query);
             
                 if ($stmt->execute()) {
@@ -375,5 +375,39 @@
                 }else{
                     return false;
                 }
+            }
+
+
+
+            public function getFacultyNumber(){
+                $query = "SELECT * FROM users WHERE isApprove = 'Yes' AND isArchive='No'";
+                $pending = $this->conn->prepare($query);
+                $pending->execute();
+                return $pending->get_result();
+            }
+            public function getPendingAccountsNumber(){
+                $query = "SELECT * FROM users WHERE isApprove = 'No'";
+                $pending = $this->conn->prepare($query);
+                $pending->execute();
+                return $pending->get_result();
+            }
+            public function getExtensionPartnerNumber(){
+                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate > DATE_ADD(NOW(), INTERVAL -1 DAY)";
+                $pending = $this->conn->prepare($query);
+                $pending->execute();
+                return $pending->get_result();
+            }
+            public function getActiveProgramNumber(){
+                $query = "SELECT * FROM extensionprograms WHERE endDate	 > DATE_ADD(NOW(), INTERVAL -1 DAY)";
+                $pending = $this->conn->prepare($query);
+                $pending->execute();
+                return $pending->get_result();
+            }
+            
+            public function getPartner30Days(){
+                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate <= DATE_ADD(NOW(), INTERVAL 30 DAY) AND partnerEndDate> DATE_ADD(NOW(), INTERVAL -1 DAY)";
+                $pending = $this->conn->prepare($query);
+                $pending->execute();
+                return $pending->get_result();
             }
     }

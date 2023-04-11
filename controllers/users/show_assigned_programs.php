@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
         );
 
         //added extension programs in loop
-        $extProg = "SELECT * FROM extensionprograms WHERE id = $pid ";
+        $extProg = "SELECT * FROM extensionprograms WHERE id = $pid AND endDate >= DATE_ADD(NOW(), INTERVAL 1 DAY)";
         $res = $connection->query($extProg);
         
         while($row = $res->fetch_assoc()) {
