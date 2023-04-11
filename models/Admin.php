@@ -310,4 +310,14 @@
                     return false; 
                 }
             }
+
+
+            public function getSpecificProgram(){
+                $extProg = "SELECT * FROM extensionprograms WHERE id = ? ";
+                $showDetails = $this->conn->prepare($extProg);
+                $showDetails->bind_param("i", $this->id);
+                $showDetails->execute();
+                return $showDetails->get_result()->fetch_assoc();
+            }
+
     }

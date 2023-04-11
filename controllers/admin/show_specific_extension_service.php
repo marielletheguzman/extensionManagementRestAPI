@@ -1,4 +1,4 @@
-    <?php
+<?php
     ini_set("display_errors", 1);
     require '../../vendor/autoload.php';
     use \Firebase\JWT\JWT;
@@ -20,11 +20,11 @@
     }
 
     include_once("../../database/database.php");
-    include_once("../../models/Users.php");
+    include_once("../../models/Admin.php");
 
     $db = new Database();
     $connection = $db->connect();
-    $userDetails = new Users($connection);
+    $adminDetails = new Admin($connection);
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET'){
 
@@ -37,8 +37,8 @@
 
             if(isset($_GET['id'])) {
                 $id = intval($_GET['id']);
-                $userDetails->id = $id;
-                $programDetails = $userDetails->getSpecificProgram();
+                $adminDetails->id = $id;
+                $programDetails = $adminDetails->getSpecificProgram();
 
 
                 $sql = "SELECT * FROM programmembers WHERE program_id = $id";
