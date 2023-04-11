@@ -423,4 +423,12 @@
                     return false;
                 }
             }
+            public function showAdminProfile(){
+                $query = "SELECT * FROM system_profile WHERE id=1";
+                $pending = $this->conn->prepare($query);
+                $pending->execute();
+                return $pending->get_result();
+            }
+
+
     }
