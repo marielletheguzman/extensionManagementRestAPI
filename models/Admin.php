@@ -362,4 +362,18 @@
                     return false; 
                 }
             }
+
+
+
+            public function renewExpiredPartner(){
+                $query = "UPDATE extensionpartner SET partnerStartDate = ?, partnerEndDate=?, partnerMoaFile=? WHERE id=?";
+                $adminObj = $this->conn->prepare($query);
+                $adminObj->bind_param("sssi", $this->partnerStartDate, $this->partnerEndDate, $this->partnerMoaFile, $this->id);
+
+                if($adminObj->execute()){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
     }
