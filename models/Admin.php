@@ -346,5 +346,20 @@
                 return $showDetails->get_result()->fetch_assoc();
             }
 
+            public function showAllExpiredPartners() {
+                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate < DATE_ADD(NOW(), INTERVAL 1 DAY);";
+                $stmt = $this->conn->prepare($query);
+            
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result(); 
+                    $partners = array(); 
 
+                    while ($row = $result->fetch_assoc()) {
+                        $partners[] = $row;
+                    }
+                    return $partners; 
+                } else {
+                    return false; 
+                }
+            }
     }
