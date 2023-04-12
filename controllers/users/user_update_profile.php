@@ -6,11 +6,12 @@ USE \Firebase\JWT\Key;
 
 header ("Access-Control-Allow-Origin: *"); 
 header ("Access-Control-Allow-Methods: PUT");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header ("Content-type: application/json; charset=UTF-8"); 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type');
+    header('Access-Control-Allow-Headers: token, Content-Type,Authorization');
     header('Access-Control-Max-Age: 1728000');
     header('Content-Length: 0');
     header('Content-Type: text/plain');
@@ -33,9 +34,8 @@ if($_SERVER['REQUEST_METHOD'] === 'PUT'){
     $secretKey = "labanLang";
     $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
     $id = $decodedData->data->id;
-    var_dump($data->fullName, $data->email, $data->position, $data->password, $data->profilePicture, $id);
-    var_dump($id);
-    if(!empty($data->fullName) && !empty($data->email) &&!empty($data->position) && !empty($data->password) && !empty($data->profilePicture)&& !empty($id)){
+
+    if(!empty($data->fullName) && !empty($data->email) &&!empty($data->position) && !empty($id)){
     
         try{
             $userDetails->id = $id;
@@ -43,10 +43,6 @@ if($_SERVER['REQUEST_METHOD'] === 'PUT'){
             $userDetails->email = $data->email;
             $userDetails->position = $data->position;
 
-            $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
-            $userDetails->password = $hashedPassword;
-            $userDetails->profilePicture = $data->profilePicture;
-     
             if($userDetails->updateProfile()){
                 http_response_code(200);
                 echo json_encode(array(

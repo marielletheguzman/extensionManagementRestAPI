@@ -89,10 +89,9 @@ class Users{
     }
     
     public function  updateProfile(){
-        $query = "UPDATE ".$this->users." SET fullname = ?, email = ?, position = ?, password = ?, profilePicture = ? WHERE id=?";
+        $query = "UPDATE ".$this->users." SET fullname = ?, email = ?, position = ? WHERE id=?";
         $userObj = $this->conn->prepare($query);
-        $userObj->bind_param("sssssi", $this->fullName, $this->email, $this->position,$this->password,$this->profilePicture, $this->id);
-
+        $userObj->bind_param("sssi", $this->fullName, $this->email, $this->position, $this->id);
         if($userObj->execute()){
             return true;
         }else{
@@ -125,6 +124,14 @@ class Users{
             $showDetails->bind_param("i", $this->id);
             $showDetails->execute();
             return $showDetails->get_result()->fetch_assoc();
+        }
+
+        public function getUserProfile(){
+            $query = "SELECT * FROM users WHERE id = ?";
+            $showDetails = $this->conn->prepare($query);
+            $showDetails->bind_param("i", $this->id);
+            $showDetails->execute();
+            return $showDetails->get_result();
         }
 }
 

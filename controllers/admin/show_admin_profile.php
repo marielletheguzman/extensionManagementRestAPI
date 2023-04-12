@@ -34,19 +34,18 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     
     if($getProfile->num_rows > 0){
     $getProfilearr = array();
-        while($row = $getProfile->fetch_assoc()){
-            $getProfilearr[] = array(
+        while($row = $getProfile->fetch_assoc()){        
+            http_response_code(200);
+            echo json_encode (array(
                 "Logo" => $row['Logo'],
                 "WebsiteName" => $row['WebsiteName'],
-                "ThemeColor" => $row['ThemeColor'],
-             
-            );
+                "ThemeColor" => $row['ThemeColor'],    
+                "Description" => $row['Description'],    
+                "MainImg" => $row['MainImg'],    
+            ));
+      
+
     }
-        http_response_code(200);
-        echo json_encode (array(
-            "status"=>"Success",
-            "pending"=> $getProfilearr
-        ));
         }
     
     }else{
