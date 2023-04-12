@@ -1,5 +1,5 @@
 <?php
-ini_set("display_errors", 1);
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Content-type: application/json; charset=UTF-8");
@@ -22,10 +22,10 @@ $connection = $db->connect();
 $userDetails = new Users($connection);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $fullName = $_POST['fullName'];
-  $email = $_POST['email'];
-  $position = $_POST['position'];
-  $password = $_POST['password'];
+  $fullName = isset($_POST['fullName']) ? $_POST['fullName'] : null;
+  $email = isset($_POST['email']) ? $_POST['email'] : null;
+  $position = isset($_POST['position']) ? $_POST['position'] : null;
+  $password = isset($_POST['password']) ? $_POST['password'] : null;
 
   // process the uploaded file
   $profilePicture = null;
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
 
     // move the uploaded file to a new location
-    $uploadFileDir = '../../assets/profile';
+    $uploadFileDir = '../../assets/profile/';
     $dest_path = $uploadFileDir . $newFileName;
     if(move_uploaded_file($fileTmpPath, $dest_path)) {
       $profilePicture = $dest_path;
