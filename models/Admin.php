@@ -82,13 +82,12 @@
                 $programLead = htmlspecialchars(strip_tags($this->programLead));
                 $place = htmlspecialchars(strip_tags($this->place));
                 $additionalDetails = htmlspecialchars(strip_tags($this->additionalDetails));
-                $partner = htmlspecialchars(strip_tags($this->partner));
+                $partner = $this->partner;
                 $startDate = htmlspecialchars(strip_tags($this->startDate));
                 $endDate = htmlspecialchars(strip_tags($this->endDate));
 
                 //to binddd:::::
                 $extensionObj->bind_param("sssssss", $this->programTitle, $this->programLead, $this->place, $this->additionalDetails, $this->partner, $this->startDate, $this->endDate);
-
                 if($extensionObj->execute()){
                     return true;
                 }return false;
@@ -348,6 +347,23 @@
 
             public function showAllExpiredPartners() {
                 $query = "SELECT * FROM extensionpartner WHERE partnerEndDate > DATE_ADD(NOW(), INTERVAL -1 DAY);";
+                $stmt = $this->conn->prepare($query);
+            
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result(); 
+                    $partners = array(); 
+
+                    while ($row = $result->fetch_assoc()) {
+                        $partners[] = $row;
+                    }
+                    return $partners; 
+                } else {
+                    return false; 
+                }
+
+            }
+            public function showAllExtensionPartners() {
+                $query = "SELECT * FROM extensionpartner";
                 $stmt = $this->conn->prepare($query);
             
                 if ($stmt->execute()) {
