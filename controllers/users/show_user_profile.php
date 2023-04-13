@@ -39,6 +39,7 @@
                 $userDetails->id =$userIddd;
                 $userInfo = $userDetails->getUserProfile();
 
+
         
                 if($userInfo->num_rows > 0){
                     $getProfilearr = array();
