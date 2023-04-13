@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
     $user_id = 1;
     try{
         $jwt = $headers['Authorization'];
-        $secretKey = "labanLang";
+        $secretKey = "bawiAko";
         $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
         $id = $decodedData->data->id;
 

@@ -32,7 +32,7 @@
 
         try {
             $jwt = $headers['Authorization'];
-            $secretKey = "labanLang";
+            $secretKey = "bawiAko";
             $decodedData = JWT::decode($jwt, new Key($secretKey, 'HS512'));
 
             if(isset($_GET['id'])) {

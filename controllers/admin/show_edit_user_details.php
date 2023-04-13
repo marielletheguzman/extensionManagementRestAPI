@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($data->id)) {
         try {
             $jwt = $headers['Authorization'];
-            $secretKey = "labanLang";
+            $secretKey = "bawiAko";
             $decodedData = JWT::decode($jwt, new Key($secretKey, 'HS512'));
 
             $adminDetails->id = $data->id;

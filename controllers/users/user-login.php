@@ -65,7 +65,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 );
 
                 //secretkey::::::::
-                $secret_key = "labanLang";
+                $secret_key = "bawiAko";
                 $payload_info = array(
                     "iss" => $iss,
                     "iat" => $iat,

@@ -9,10 +9,12 @@ USE \Firebase\JWT\Key;
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
 header("Content-type: application/json; charset=utf-8");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type');
+    header('Access-Control-Allow-Headers: token, Content-Type,Authorization');
     header('Access-Control-Max-Age: 1728000');
     header('Content-Length: 0');
     header('Content-Type: text/plain');
@@ -34,16 +36,18 @@ $headers = getallheaders();
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
     try{
         $jwt = $headers['Authorization'];
-        $secretKey = "labanLang";
+        $secretKey = "bawiAko";
         $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
     
 
     $pendings = $adminObj->listOfManageAccount();
-    
+    $counts =0;
     if($pendings->num_rows > 0){
     $pendings_array = array();
         while($row = $pendings->fetch_assoc()){
+            $counts++;
             $pendings_array[] = array(
+                "id" => $row['id'],
                 "fullName" => $row['fullName'],
                 "email" => $row['email'],
                 "position" => $row['position'],
@@ -54,6 +58,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
         http_response_code(200);
         echo json_encode (array(
             "status"=>"Success",
+            "counts"=> $counts,
             "pending"=> $pendings_array
         ));
         }

@@ -27,6 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $position = isset($_POST['position']) ? $_POST['position'] : null;
   $password = isset($_POST['password']) ? $_POST['password'] : null;
 
+
+  if (!empty($fullName) && !empty($email) && !empty($position) && !empty($password)) {
+
   // process the uploaded file
   $profilePicture = null;
   if (isset($_FILES['profilePicture']) && !empty($_FILES['profilePicture']['name'])) {
@@ -48,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 
-  if (!empty($fullName) && !empty($email) && !empty($position) && !empty($password)) {
 
     $userObj = new Users($connection);
     $userObj->fullName = $fullName;

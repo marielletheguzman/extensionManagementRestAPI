@@ -33,7 +33,7 @@ if($_SERVER['REQUEST_METHOD'] === 'PUT'){
 
             $headers = getallheaders();
             $jwt = $headers['Authorization'];
-            $secretKey = "labanLang";
+            $secretKey = "bawiAko";
             $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
             
             $adminDetails->Logo = $data->Logo;

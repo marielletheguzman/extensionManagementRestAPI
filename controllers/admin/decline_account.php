@@ -7,10 +7,12 @@ USE \Firebase\JWT\Key;
 header ("Access-Control-Allow-Origin: *"); 
 header ("Access-Control-Allow-Methods: PUT");
 header ("Content-type: application/json; charset=UTF-8"); 
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type');
+    header('Access-Control-Allow-Headers: token, Content-Type,Authorization');
     header('Access-Control-Max-Age: 1728000');
     header('Content-Length: 0');
     header('Content-Type: text/plain');
@@ -33,7 +35,7 @@ if($_SERVER['REQUEST_METHOD'] === 'PUT'){
 
             $headers = getallheaders();
             $jwt = $headers['Authorization'];
-            $secretKey = "labanLang";
+            $secretKey = "bawiAko";
             $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
             
             $adminDetails->id = $data->id;

@@ -36,7 +36,7 @@ $headers = getallheaders();
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
     try{
         $jwt = $headers['Authorization'];
-        $secretKey = "labanLang";
+        $secretKey = "bawiAko";
         $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
     
 

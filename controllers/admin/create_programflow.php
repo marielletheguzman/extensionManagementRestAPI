@@ -36,7 +36,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if(!empty($data->program_id)&& !empty($data->eventName)&& !empty($data->eventType)){
         try{
         $jwt = $headers['Authorization'];
-        $secretKey = "labanLang";
+        $secretKey = "bawiAko";
         $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
         
         $adminObj->program_id = $data->program_id;
