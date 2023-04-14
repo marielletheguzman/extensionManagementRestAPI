@@ -40,7 +40,10 @@
             if ($partners !== false) {
                 http_response_code(200);
                 header('Content-Type: application/json');
-                echo json_encode(array("partners:" =>$partners));
+                echo json_encode(array(
+                    "count" => count($partners),
+                    "partners" =>$partners
+                ));
             } else {
                 http_response_code(500);
                 echo json_encode(array("message" => "Unable to retrieve partner data."));
