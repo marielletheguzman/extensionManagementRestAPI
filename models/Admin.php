@@ -196,28 +196,29 @@
         }
 
 
-            public function createExtensionPartner(){
-                $query = "INSERT INTO extensionpartner SET partnerName=?, partnerAddress=?, partnerContactPerson=?, partnerContactNumber =?, partnerLogo=?, partnerMoaFile=?, partnerStartDate=?, partnerEndDate=?, 	partnerIsExpired='No'";
-                $partner = $this->conn->prepare($query);
-
-                //--sanitize--
-                $partnerName = htmlspecialchars(strip_tags($this->partnerName));
-                $partnerAddress = htmlspecialchars(strip_tags($this->partnerAddress));
-                $partnerContactPerson = htmlspecialchars(strip_tags($this->partnerContactPerson));
-                $partnerContactNumber = htmlspecialchars(strip_tags($this->partnerContactNumber));
-                $partnerLogo = htmlspecialchars(strip_tags($this->partnerLogo));
-                $partnerMoaFile = htmlspecialchars(strip_tags($this->partnerMoaFile));
-                $partnerStartDate = htmlspecialchars(strip_tags($this->partnerStartDate));
-                $partnerEndDate = htmlspecialchars(strip_tags($this->partnerEndDate));
-
-                $partner->bind_param("ssssssss", $this->partnerName, $this->partnerAddress, $this->partnerContactPerson, $this->partnerContactNumber, $this->partnerLogo, $this->partnerMoaFile, $this->partnerStartDate, $this->partnerEndDate);
-                if($partner->execute()){
-                    return true;
-                }else{
-                    return false;
-                }
-
+        public function createExtensionPartner(){
+            $query = "INSERT INTO extensionpartner SET partnerName=?, partnerAddress=?, partnerContactPerson=?, partnerContactNumber=?, partnerLogo=?, partnerMoaFile=?, partnerStartDate=?, partnerEndDate=?,partnerIsExpired='No'";
+            $partner = $this->conn->prepare($query);
+        
+            $partner->bind_param("ssssssss", $this->partnerName, $this->partnerAddress, $this->partnerContactPerson, $this->partnerContactNumber, $this->partnerLogo, $this->partnerMoaFile, $this->partnerStartDate, $this->partnerEndDate);
+        
+            $date = date("Y-m-dhis");
+            $logo_file_name = $date . "_" . $_FILES['partnerLogo']['name'];
+            $moa_file_name = $date . "_" . $_FILES['partnerMoaFile']['name'];
+            $target_path_logo = "../../assets/extensionProfile/" . $logo_file_name;
+            $target_path_moa = "../../assets/extensionFiles/" . $moa_file_name;
+            move_uploaded_file($_FILES['partnerLogo']['tmp_name'], $target_path_logo);
+            move_uploaded_file($_FILES['partnerMoaFile']['tmp_name'], $target_path_moa);
+        
+            $partner->bind_param("ssssssss", $this->partnerName, $this->partnerAddress, $this->partnerContactPerson, $this->partnerContactNumber, $logo_file_name, $moa_file_name, $this->partnerStartDate, $this->partnerEndDate);
+        
+            if($partner->execute()){
+                return true;
+            }else{
+                return false;
             }
+        }
+        
 
             public function listOfPendingAccounts(){
                 $query = "SELECT * FROM ".$this->userstbl." WHERE isApprove = 'No'";
@@ -445,5 +446,16 @@
                 return $pending->get_result();
             }
 
+            public function addPartner(){
+                $query = "INSERT INTO extensionpartner SET partnerName= ?, partnerAddress =?";
+                $userObj = $this->conn->prepare($query);
+                $userObj->bind_param("ss", $this->partnerName, $this->partnerAddress);
+
+                if($userObj->execute()){
+                    return true;
+                }
+                return false;
+            }
+        
 
     }
