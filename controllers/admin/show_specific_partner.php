@@ -41,9 +41,6 @@
                 $programDetails = $adminDetails->getSpecificPartner();
 
 
-
-
-
                 if(!empty($programDetails)){ 
                     $id = $programDetails['id'];
                     $partnerName = $programDetails['partnerName'];

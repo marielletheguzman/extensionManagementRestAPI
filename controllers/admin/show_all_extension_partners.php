@@ -31,7 +31,7 @@
         $headers = getallheaders();
 
                 // Create SQL query
-                $sql = "SELECT * FROM extensionpartner";
+                $sql = "SELECT * FROM extensionpartner WHERE partnerEndDate >= DATE_ADD(NOW(), INTERVAL 1 DAY);";
 
                 // Execute query
                 $result = $connection->query($sql);
