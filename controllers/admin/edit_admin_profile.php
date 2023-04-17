@@ -27,7 +27,7 @@ $adminDetails = new Admin ($connection);
 if($_SERVER['REQUEST_METHOD'] === 'PUT'){
 
     $data = json_decode(file_get_contents("php://input"));
-    if( !empty($data->Logo) && !empty($data->WebsiteName)&& !empty($data->ThemeColor)){
+    if( !empty($data->Description) && !empty($data->WebsiteName)&& !empty($data->ThemeColor)){
     
         try{
 
@@ -36,20 +36,66 @@ if($_SERVER['REQUEST_METHOD'] === 'PUT'){
             $secretKey = "bawiAko";
             $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
             
-            $adminDetails->Logo = $data->Logo;
+            $adminDetails->Description = $data->Description;
             $adminDetails->WebsiteName = $data->WebsiteName;
             $adminDetails->ThemeColor = $data->ThemeColor;
 
-     
-            if($adminDetails->editAdminProfile()){
+            $Logo = null;
+            if (isset($_FILES['Logo']) && !empty($_FILES['Logo']['name'])) {
+                $fileTmpPath = $_FILES['Logo']['tmp_name'];
+                $fileName = $_FILES['Logo']['name'];
+                $fileSize = $_FILES['Logo']['size'];
+                $fileType = $_FILES['Logo']['type'];
+                $fileNameCmps = explode(".", $fileName);
+                $fileExtension = strtolower(end($fileNameCmps));
+            
+                // create a unique file name
+                $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+            
+                // move the uploaded file to a new location
+                $dest_path = '../../assets/extensionProfile/' . $newFileName;
+                if(move_uploaded_file($fileTmpPath, $dest_path)) {
+                  $Logo = $newFileName;
+                }
+            }
+
+            $MainImg = null;
+            if (isset($_FILES['MainImg']) && !empty($_FILES['MainImg']['name'])) {
+                $fileTmpPath = $_FILES['MainImg']['tmp_name'];
+                $fileName = $_FILES['MainImg']['name'];
+                $fileSize = $_FILES['MainImg']['size'];
+                $fileType = $_FILES['MainImg']['type'];
+                $fileNameCmps = explode(".", $fileName);
+                $fileExtension = strtolower(end($fileNameCmps));
+            
+                // create a unique file name
+                $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+            
+                // move the uploaded file to a new location
+                $dest_path = '../../assets/extensionProfile/' . $newFileName;
+                if(move_uploaded_file($fileTmpPath, $dest_path)) {
+                  $MainImg = $newFileName;
+                }
+            }
+            $query = "UPDATE system_profile SET Logo = ?, WebsiteName=?, ThemeColor=?, Description = ?, MainImg = ? WHERE id=1";
+            $stmt = connection->prepare($query);
+            $stmt->bind_param("sssss", $Logo, $WebsiteName, $ThemeColor, $Description, $MainImg);
+            if (!$stmt->execute()) {
+                http_response_code(500);
+                echo json_encode(array('error' => 'Internal Server Error'));
+                exit();
+            }
+            if ($stmt->execute()) {
                 http_response_code(200);
                 echo json_encode(array(
                     "status" => 1,
                     "message" => "Admin Profile has been updated!",
                     "AdminProfile" => array(
-                        "Logo" => $data->Logo,
-                        "WebsiteName" => $data->WebsiteName,
-                        "ThemeColor" => $data->ThemeColor
+                        "Description" =>$Description,
+                        "WebsiteName" =>$WebsiteName,
+                        "ThemeColor" =>$ThemeColor,
+                        "Main" =>$MainImg,
+                        "Logo" =>$Logo
                     )
                 ));
             }else{

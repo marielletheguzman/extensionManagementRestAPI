@@ -51,7 +51,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $adminObj->endDate = $data->endDate;
 
         if($adminObj->createExtensionProgram()){
-            $adminObj->relatedFiles();
             http_response_code(200);
             echo json_encode(array(
                 "status" => 1,
