@@ -5,7 +5,7 @@ use \Firebase\JWT\JWT;
 USE \Firebase\JWT\Key;
 
 header ("Access-Control-Allow-Origin: *"); 
-header ("Access-Control-Allow-Methods: PUT");
+header ("Access-Control-Allow-Methods: POST");
 header ("Content-type: application/json; charset=UTF-8"); 
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -30,22 +30,28 @@ $adminDetails = new Admin ($connection);
 // Check if request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-
-    $WebsiteName = isset($_POST['WebsiteName']) ? $_POST['WebsiteName'] : null;
-    $ThemeColor = isset($_POST['ThemeColor']) ? $_POST['ThemeColor'] : null;
-    $Description = isset($_POST['Description']) ? $_POST['Description'] : null;
-
-
-            if (empty($Description)||empty($WebsiteName)||empty($ThemeColor)) {
-                http_response_code(400);
-                echo json_encode(array('error' =>   $Description,$WebsiteName,$ThemeColor   ));
-                exit();
-            }
-
+    $Logo = null;
+    if (isset($_FILES['Logo']) && !empty($_FILES['Logo']['name'])) {
+        $fileTmpPath = $_FILES['Logo']['tmp_name'];
+        $fileName = $_FILES['Logo']['name'];
+        $fileSize = $_FILES['Logo']['size'];
+        $fileType = $_FILES['Logo']['type'];
+        $fileNameCmps = explode(".", $fileName);
+        $fileExtension = strtolower(end($fileNameCmps));
+    
+        // create a unique file name
+        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+    
+        // move the uploaded file to a new location
+        $dest_path = '../../assets/adminProfile/'. $newFileName;
+        if(move_uploaded_file($fileTmpPath, $dest_path)) {
+          $Logo = $newFileName;
+        }
+    }
          
-            $query = "UPDATE system_profile SET WebsiteName=?, ThemeColor=?, Description = ? WHERE id=1";
+            $query = "UPDATE system_profile SET Logo=? WHERE id=1";
             $stmt = $connection->prepare($query);
-            $stmt->bind_param("sss", $WebsiteName, $ThemeColor, $Description);
+            $stmt->bind_param("s",$Logo);
             if (!$stmt->execute()) {
                 http_response_code(500);
                 echo json_encode(array('error' => 'Internal Server Error'));
@@ -57,9 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     "status" => 1,
                     "message" => "Admin Profile has been updated!",
                     "AdminProfile" => array(
-                        "Description" =>$Description,
-                        "WebsiteName" =>$WebsiteName,
-                        "ThemeColor" =>$ThemeColor,
+                        "Description" =>$Logo,
+
                     )
                 ));
    
