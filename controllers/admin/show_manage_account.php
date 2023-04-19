@@ -34,10 +34,7 @@ $adminObj = new Admin($connection);
 $headers = getallheaders();
 
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
-    try{
-        $jwt = $headers['Authorization'];
-        $secretKey = "bawiAko";
-        $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
+
     
 
     $pendings = $adminObj->listOfManageAccount();
@@ -62,14 +59,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
             "pending"=> $pendings_array
         ));
         }
-    }
-    catch(Exception $ex){
-        http_response_code(500);
-        echo json_encode(array(
-            "status" => "Failed",
-            "message" =>"Authorization Failed"
-        ));
-        }
+   
     }else{
         http_response_code(500);
         echo json_encode(array(
