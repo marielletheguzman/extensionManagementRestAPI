@@ -5,12 +5,14 @@ use \Firebase\JWT\JWT;
 USE \Firebase\JWT\Key;
 
 header ("Access-Control-Allow-Origin: *"); 
-header ("Access-Control-Allow-Methods: PUT");
+header ("Access-Control-Allow-Methods: POST");
 header ("Content-type: application/json; charset=UTF-8"); 
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type');
+    header('Access-Control-Allow-Headers: token, Content-Type, Authorization');
     header('Access-Control-Max-Age: 1728000');
     header('Content-Length: 0');
     header('Content-Type: text/plain');
@@ -24,60 +26,39 @@ $db = new Database();
 $connection = $db->connect();
 $adminDetails = new Admin ($connection);
 
-if($_SERVER['REQUEST_METHOD'] === 'PUT'){
 
-    $data = json_decode(file_get_contents("php://input"));
-    if(!empty($data->fullName) && !empty($data->email) &&!empty($data->position) && !empty($data->password) && !empty($data->profilePicture)&& !empty($data->id)){
+// Check if request method is POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $id = isset($_GET['id']) ? $_GET['id'] : null;
+
+    // $fullName = isset($_POST['fullName']) ? $_POST['fullName'] : null;
+    // $email = isset($_POST['email']) ? $_POST['email'] : null;
+    // $position = isset($_POST['position']) ? $_POST['position'] : null;
+
+    $request_body = file_get_contents('php://input');
+
+    // Decode the JSON data into a PHP object
+    $data = json_decode($request_body);
     
-        try{
+    // Set the variables
+    $fullName = isset($data->fullName) ? $data->fullName : null;
+    $email = isset($data->email) ? $data->email : null;
+    $position = isset($data->position) ? $data->position : null;
 
-            $headers = getallheaders();
-            $jwt = $headers['Authorization'];
-            $secretKey = "bawiAko";
-            $decodedData = JWT::decode( $jwt, new Key($secretKey,  'HS512'));
-            
-            $adminDetails->id = $data->id;
-            $adminDetails->fullName = $data->fullName;
-            $adminDetails->email = $data->email;
-            $adminDetails->position = $data->position;
-
-            $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
-            $adminDetails->password = $hashedPassword;
-            $adminDetails->profilePicture = $data->profilePicture;
-     
-            if($adminDetails->editUserProfile()){
-                http_response_code(200);
-                echo json_encode(array(
-                    "status" => 1,
-                    "message" => "Profile has been updated!",
-                    "data" => $decodedData
-                ));
-            }else{
-                http_response_code(500);
-                echo json_encode(array(
-                    "status" => 0,
-                    "message" => "Failed to update"
-                ));
-            }
-        }    catch(Exception $ex){
-            http_response_code(500);
-            echo json_encode(array(
-                "status" => 0,
-                "message" => $ex->getMessage()
-                ));
-        }
-    } else{
-        http_response_code(404);
-        echo json_encode(array(
-            "status"=>0,
-            "message" => "All data needed" ,
-            
-        ));
+    
+    if (empty($fullName)||empty($email)||empty($position)) {
+        http_response_code(400);
+        echo json_encode(array('error' =>   $fullName,$email,$id,$position  ));
+        exit();
     }
-}else{
-    http_response_code(500);
-    echo json_encode(array(
-        "status"=>0,
-        "message" => "Access Denied"
-    ));
+
+    $query = "UPDATE users SET fullName = ?, email=?, position=? WHERE id=?";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("sssi", $fullName, $email,  $position,$id);
+
+    if ($stmt->execute()) {
+        echo json_encode(array('goods' =>   $fullName,$email,$id,$position  ));
+        exit();
+    }
 }
