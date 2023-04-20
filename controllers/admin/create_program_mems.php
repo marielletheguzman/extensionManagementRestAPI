@@ -30,8 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = isset($json['name']) ? $json['name'] : null;
     $position = isset($json['position']) ? $json['position'] : null;
     $user_id= isset($json['user_id']) ? $json['user_id'] : null;
+    $involvement= isset($json['involvement']) ? $json['involvement'] : null;
 
-    if (empty($name) || empty($position) || empty($user_id)) {
+    if (empty($name) || empty($position) || empty($user_id)|| empty($involvement)) {
         http_response_code(400);
         echo json_encode(array('error' => $data));
         exit();
@@ -49,16 +50,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     }
 
-    $query = "INSERT INTO programmembers SET program_id=".$selectedProgramId.", name=?, position=?, user_id=?";
+    $query = "INSERT INTO programmembers SET program_id=".$selectedProgramId.", name=?, position=?, user_id=?, involvement=?";
     $progMember = $connection->prepare($query);
 
     //sanitize
     $name = htmlspecialchars(strip_tags($name));
     $position = htmlspecialchars(strip_tags($position));
     $user_id = htmlspecialchars(strip_tags($user_id));
+    $involvement = htmlspecialchars(strip_tags($involvement));
 
     //to bind!
-    $progMember->bind_param("ssi", $name, $position, $user_id);
+    $progMember->bind_param("ssis", $name, $position, $user_id,$involvement);
     if($progMember->execute()){
         echo json_encode(array('success' => 'success'));
     }

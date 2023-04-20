@@ -34,7 +34,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $headers = getallheaders();
 
 
-    if(!empty($data->name) && !empty($data->position) && !empty($data->user_id)){
+    if(!empty($data->name) && !empty($data->position) && !empty($data->user_id)&& !empty($data->involvement)){
 
         try{
 
