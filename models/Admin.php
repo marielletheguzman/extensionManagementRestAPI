@@ -346,7 +346,7 @@
             }
 
             public function showAllExpiredPartners() {
-                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate < DATE_ADD(NOW(), INTERVAL 1 DAY);";
+                $query = "SELECT * FROM extensionpartner WHERE partnerEndDate <= DATE_ADD(NOW(), INTERVAL -1 DAY);";
                 $stmt = $this->conn->prepare($query);
             
                 if ($stmt->execute()) {
