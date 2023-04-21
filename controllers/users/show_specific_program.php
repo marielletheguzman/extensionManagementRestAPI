@@ -53,22 +53,42 @@
                         "userId" => $user_id,);
                     
                     }
-
-                    $sql = "SELECT * FROM programparticipant WHERE program_id = $id";
-                    $result = $connection->query($sql);
-                    if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
+                    
+                    $sql1 = "SELECT * FROM programparticipant WHERE program_id = $id";
+                    $result1 = $connection->query($sql1);
+            
+              
+                    while($row = $result1->fetch_assoc()) {
                         $participant = $row['participant'];
                         $entity = $row['entity'];
                         $user_id = $row['user_id'];
-                        $programparticipant[] = array(
-                            "user" => $user,
-                            "position" => $position,
-                            "userId" => $user_id,);
-                        }}else{
-                            $programparticipant = array();
-                        
+                        $program_id = $row['program_id'];
+                        $pid =  $program_id;
+                        $participants[] = array(
+                            "participant" => $participant,
+                            "entity" => $entity,
+                            "userId" => $user_id,
+                            "programID" => $program_id,
+                         
+                        );}if(empty($participants)) {
+                            $participants = '';
                         }
+
+                        $sql2 = "SELECT * FROM programflow WHERE program_id = $id";
+                        $result2 = $connection->query($sql2);
+                
+                  
+                        while($row = $result2->fetch_assoc()) {
+
+                            $eventName = $row['eventName'];
+                            $eventType = $row['eventType'];
+                            $events[] = array(
+                                "eventName" => $eventName,
+                                "eventType" => $eventType,
+                             
+                            );}if(empty($events)) {
+                                $events = '';
+                            }
 
                         $sql = "SELECT * FROM relatedfiles WHERE extension_id = $id";
                         $result = $connection->query($sql);
@@ -78,14 +98,20 @@
                             $attendance = $row['attendance'];
                             $invitation = $row['invitation'];
                             $relatedFiles[] = array(
-                                "user" => $certificate,
-                                "position" => $attendance,
-                                "userId" => $invitation,);
+                                "certificate" => $certificate,
+                                "attendance" => $attendance,
+                                "invitation" => $invitation,);
                             }}else{
                                 $relatedFiles = array();
                             
+                            }if(empty($relatedFiles)) {
+                                $relatedFiles[] = array(
+                                    "certificate" => "asd",
+                                    "attendance" => "",
+                                    "invitation" => "",);
                             }
-
+    
+                    
                 if(!empty($programDetails)){ 
                     $id = $programDetails['id'];
                     $programTitle = $programDetails['programTitle'];
@@ -110,10 +136,14 @@
                             "endDate" => $endDate,
                         ),
                         "programMembers" =>$programmembers,
-                        "programparticipant" =>$programparticipant,
+                        "programparticipant" =>$participants,
+                        "events" =>$events,
                         "relatedFiles" =>$relatedFiles 
             
                     ));
+
+
+
                 } else {
                     http_response_code(404);
                     echo json_encode(array(

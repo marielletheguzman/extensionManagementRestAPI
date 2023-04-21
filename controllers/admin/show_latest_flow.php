@@ -50,6 +50,7 @@
         if($progMember->num_rows > 0){
             while ($row = $progMember->fetch_assoc()){
                 $progMem = array(
+                    "id" => $row['id'],
                     "eventName" => $row['eventName'],
                     "eventType" => $row['eventType'],
                     "selectedId" => $selectedProgramId,

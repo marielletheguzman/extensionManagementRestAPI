@@ -51,6 +51,7 @@
             while ($row = $progMember->fetch_assoc()){
                 $progMem = array(
                     "program_id" => $row['program_id'],
+                    "id" => $row['id'],
                     "name" => $row['name'],
                     "position" => $row['position'],
                     "user_id" => $row['user_id'],

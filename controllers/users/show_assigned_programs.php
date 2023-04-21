@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
                     "programID" => $program_id,
                  
         );
-
+            
         //added extension programs in loop
         $extProg = "SELECT * FROM extensionprograms WHERE id = $pid AND endDate >= DATE_ADD(NOW(), INTERVAL 1 DAY)";
         $res = $connection->query($extProg);
@@ -92,34 +92,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
     );
 
         }
+        $sql1 = "SELECT * FROM programparticipant WHERE program_id = $pid";
+        $result1 = $connection->query($sql1);
+
+  
+        while($row = $result1->fetch_assoc()) {
+            $participant = $row['participant'];
+            $entity = $row['entity'];
+            $user_id = $row['user_id'];
+            $program_id = $row['program_id'];
+            $pid =  $program_id;
+            $participants[] = array(
+                "participant" => $participant,
+                "entity" => $entity,
+                "userId" => $user_id,
+                "programID" => $program_id,
+             
+    );}if(empty($participants)) {
+        $participants = '';
+    }
+
     
             }
 
-
-
-
-
-        //     $sql = "SELECT * FROM programparticipant WHERE program_id = $pid ";
-        //     $result = $connection->query($sql);
-    
-      
-        //     while($row = $result->fetch_assoc()) {
-        //         $user = $row['name'];
-        //         $position = $row['position'];
-        //         $user_id = $row['user_id'];
-        //         $data[] = array(
-        //             "user" => $user,
-        //             "position" => $position,
-        //             "userId" => $user_id,
-                 
-        // );
-    // }
             http_response_code(200);
             echo json_encode(array(
                 "status" => 1,
                 "message" => "Program view". $pid ,
                 "extensionPrograms" =>  $extensionProgram,
                 "programMembers"=> $members,
+                "participant"=> $participants,
                 
             ));
         }else{
