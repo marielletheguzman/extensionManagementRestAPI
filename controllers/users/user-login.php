@@ -41,77 +41,75 @@ $userObj = new Users($connection);
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $data = json_decode(file_get_contents("php://input"));
-
-    if(!empty($data->email) && !empty($data->password) ){
+    if (!empty($data->email) && !empty($data->password)) {
         $userObj->email = $data->email;
         $userObj->password = $data->password;
-
+    
         $userObj = $userObj->loginUser();
-
-            if(!empty($userObj)){
-                $email = $userObj['email'];
-                $password = $userObj['password'];
-
-                if(password_verify($data->password, $password)){
-                    
-                $iss = "localhost";
-                $iat = time();
-                $nbf = $iat + 2;
-                $exp = $iat + 1000000;
-                $aud = "myusers";
-                $adminArrData = array(
-                    "email" =>  $userObj['email'],
-                    "id" => $userObj['id']
-                );
-
-                //secretkey::::::::
-                $secret_key = "bawiAko";
-                $payload_info = array(
-                    "iss" => $iss,
-                    "iat" => $iat,
-                    "nbf" => $nbf,
-                    "exp" => $exp,
-                    "aud" => $aud,
-                    "data" =>  $adminArrData
-                );
-
-                $jwt = JWT::encode($payload_info, $secret_key, 'HS512');
-
-                http_response_code(200);
-                echo json_encode(array(
-                    "status"=>1,
-                    "token" => $jwt,
-                    "message" => "User logged in successfully!"
-                ));
-
-                }else{
+    
+        if (!empty($userObj)) {
+            $email = $userObj['email'];
+            $password = $userObj['password'];
+    
+            if (password_verify($data->password, $password)) {
+    
+                // Check if the user is approved or not
+                if ($userObj['isApprove'] == 'Yes') {
+                    $iss = "localhost";
+                    $iat = time();
+                    $nbf = $iat + 2;
+                    $exp = $iat + 1000000;
+                    $aud = "myusers";
+                    $adminArrData = array(
+                        "email" => $userObj['email'],
+                        "id" => $userObj['id']
+                    );
+    
+                    //secretkey::::::::
+                    $secret_key = "bawiAko";
+                    $payload_info = array(
+                        "iss" => $iss,
+                        "iat" => $iat,
+                        "nbf" => $nbf,
+                        "exp" => $exp,
+                        "aud" => $aud,
+                        "data" => $adminArrData
+                    );
+    
+                    $jwt = JWT::encode($payload_info, $secret_key, 'HS512');
+    
+                    http_response_code(200);
+                    echo json_encode(array(
+                        "status" => 1,
+                        "token" => $jwt,
+                        "message" => "User logged in successfully!"
+                    ));
+                } else {
+                    http_response_code(404);
+                    echo json_encode(array(
+                        "status" => 0,
+                        "message" => "User is not yet approved"
+                    ));
+                }
+            } else {
                 http_response_code(404);
                 echo json_encode(array(
-                    "status"=> 0,
-                    "message" => "invalid credentials"
+                    "status" => 0,
+                    "message" => "Invalid credentials"
                 ));
             }
-        }else{
+        } else {
             http_response_code(404);
             echo json_encode(array(
-                "status"=> 0,
-                "message" => "invalid credentials"
+                "status" => 0,
+                "message" => "Invalid credentials"
             ));
         }
-
-
-
-    }else{
+    } else {
         http_response_code(404);
         echo json_encode(array(
             "status" => 0,
             "message" => "All data needed!"
         ));
     }
-}else{
-    http_response_code(500);
-    echo json_encode(array(
-        "status" => 0,
-        "message" => "Access Denied!"
-    ));
-}
+}    

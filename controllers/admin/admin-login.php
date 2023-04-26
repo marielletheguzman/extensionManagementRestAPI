@@ -62,7 +62,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     "nbf" => $nbf,
                     "exp" => $exp,
                     "aud" => $aud,
-                    "data" =>  $adminArrData
+                    "data" =>  $adminArrData,
+                    
                 );
 
                 $jwt = JWT::encode($payload_info, $secret_key, 'HS512');

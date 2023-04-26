@@ -62,7 +62,21 @@ class Users{
     }
 
     public function loginUser(){
-        $query = "SELECT * FROM users WHERE email = ? and isApprove='Yes'";
+        $query = "SELECT * FROM users WHERE email = ? AND (isApprove = 'Yes' OR isApprove = 'No')";
+        $login = $this->conn->prepare($query);
+        $login->bind_param("s", $this->email);
+        
+        //execute
+        if($login->execute()){
+            $data = $login->get_result();
+            return $data->fetch_assoc();
+
+        }
+        return array();
+    }
+
+    public function loginUserNotApprove(){
+        $query = "SELECT * FROM users WHERE email = ? and isApprove='No'";
         $login = $this->conn->prepare($query);
         $login->bind_param("s", $this->email);
         

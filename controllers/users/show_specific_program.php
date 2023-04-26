@@ -121,6 +121,9 @@
                     $partner = $programDetails['partner'];
                     $startDate = $programDetails['startDate'];
                     $endDate = $programDetails['endDate'];
+                    $certificate = $programDetails['certificate'];
+                    $attendance = $programDetails['attendance'];
+                    $invitation = $programDetails['invitation'];
 
                     http_response_code(200);
                     echo json_encode(array(
@@ -134,6 +137,9 @@
                             "partner" => $partner,
                             "startDate" => $startDate,
                             "endDate" => $endDate,
+                            "certificate" => $certificate,
+                            "attendance" => $attendance,
+                            "invitation" => $invitation,
                         ),
                         "programMembers" =>$programmembers,
                         "programparticipant" =>$participants,
