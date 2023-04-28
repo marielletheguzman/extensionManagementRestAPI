@@ -11,7 +11,7 @@
 
         public function connect(){
             $this->hostname = "localhost:3307";
-            $this->dbname = "extensionofficemanagement";
+            $this->dbname = "extensionofficemanagement1";
             $this->username="root";
             $this->password="";
 
