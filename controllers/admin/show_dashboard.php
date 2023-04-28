@@ -71,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
             $programNum = $programNum +1;
         }
     }
-    
+    $extensionPartners = "";
     if($renew->num_rows > 0){
         while($row = $renew->fetch_assoc()){
             $name = $row['partnerName'];
@@ -83,6 +83,9 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
             $partnerMoaFile = $row['partnerMoaFile'];
             $partnerStartDate = $row['partnerStartDate'];
             $partnerEndDate = $row['partnerEndDate'];
+            if(empty($extensionPartners)){
+                $extensionPartners = "";
+            }else{
             $extensionPartners[] = array(
                 "id" => $id,
                 "extensionPartner" => $name,
@@ -93,8 +96,9 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                 "partnerMoaFile" => $partnerMoaFile,
                 "partnerStartDate" => $partnerStartDate,
                 "partnerEndDate" => $partnerEndDate,
-            );
+            );}
         }
+
     }
         http_response_code(200);
         echo json_encode (array(
