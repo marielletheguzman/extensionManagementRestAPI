@@ -75,6 +75,21 @@ class Users{
         return array();
     }
 
+    public function resetPass(){
+        $query = "SELECT * FROM users WHERE email = ?";
+        $login = $this->conn->prepare($query);
+        $login->bind_param("s", $this->email);
+        
+        //execute
+        if($login->execute()){
+            $data = $login->get_result();
+            return $data->fetch_assoc();
+
+        }
+        return array();
+    }
+
+
     public function loginUserNotApprove(){
         $query = "SELECT * FROM users WHERE email = ? and isApprove='No'";
         $login = $this->conn->prepare($query);
