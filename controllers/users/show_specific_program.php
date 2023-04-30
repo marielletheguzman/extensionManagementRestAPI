@@ -125,6 +125,15 @@
                     $attendance = $programDetails['attendance'];
                     $invitation = $programDetails['invitation'];
 
+                    if($certificate === '' || $certificate === null){
+                        $certificate = 'certificate.pdf';
+                    }
+                    if($attendance === '' || $attendance === null){
+                        $attendance = 'attendance.pdf';
+                    }
+                    if($invitation === '' || $invitation === null){
+                        $invitation = 'invitation.pdf';
+                    }
                     http_response_code(200);
                     echo json_encode(array(
                         "status" => 1,

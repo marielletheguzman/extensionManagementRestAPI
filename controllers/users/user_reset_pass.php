@@ -33,7 +33,7 @@
         $headers = getallheaders();
 
         $token = $_GET['token'];
-        echo $token;
+        // echo $token;
         // $jwt = $headers['Authorization'];
         $secretKey = "bawiAko";
         $decodedData = JWT::decode($token, new Key($secretKey,  'HS512'));

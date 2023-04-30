@@ -63,6 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $connection->prepare($query);
             $stmt->bind_param("si", $profilePicture, $id);
 
+            if(empty($profilePicture) || $profilePicture == null){
+                http_response_code(500);
+                echo json_encode(array('error' => 'Empty inputs'));
+                exit();
+            }
             if (!$stmt->execute()) {
                 http_response_code(500);
                 echo json_encode(array('error' => 'Internal Server Error'));

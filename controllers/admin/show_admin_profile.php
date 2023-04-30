@@ -42,6 +42,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
                 "ThemeColor" => $row['ThemeColor'],    
                 "Description" => $row['Description'],    
                 "MainImg" => $row['MainImg'],    
+  
             ));
       
 

@@ -42,16 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (!empty($userObj)) {
         $email = $userObj['email'];
-
+        $fullName = $userObj['fullName'];
             if ($userObj) {
                 $iss = "localhost";
                 $iat = time();
                 $nbf = $iat + 2;
-                $exp = $iat + 1000000;
+                $exp = $iat + 3600;
                 $aud = "myusers";
                 $adminArrData = array(
                     $email = $userObj['email'],
-                    "id" => $userObj['id']
+                    "id" => $userObj['id'],
+                    $fullName => $userObj['fullName']
                 );
 
                 //secretkey::::::::
@@ -70,14 +71,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
 
-    echo var_dump($_POST);
+    // echo var_dump($_POST);
     // Create a new instance of PHPMailer
     $mail = new PHPMailer(true);
-
+    if(empty($jwt)){
+        http_response_code(500);
+        echo json_encode(array(
+            "status"=>0,
+            "message" => "Access Denied"
+        ));
+    }else{
     try {
         // Set up SMTP
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-        $mail->SMTPDebug = SMTP::DEBUG_CONNECTION;
+        // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        // $mail->SMTPDebug = SMTP::DEBUG_CONNECTION;
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
@@ -87,18 +94,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mail->Port = 587;
 
         // Set up email content
-        $mail->setFrom('verify.your.mail.01@gmail.com', 'Your Name');
+        $mail->setFrom('verify.your.mail.01@gmail.com', 'UGLYZ');
         $mail->addAddress($email);
         $mail->Subject = "Forgot Password";
         $mail->isHTML(true);
+
+        //hosting name Angular
         $resetUrl = 'http://localhost:4200/reset';
+
+        
         $image_url = 'https://anonsharing.com/cache/plugins/filepreviewer/11352/e8494db3ceed53e8cf442bad284b1ceef6ed3fb35ac963e3d38cfee2a444f925/1100x800_cropped.jpg';
         $mail->Body = '
         <html>
         <body>
         <div style="background-color:white; margin-left: 40%;">
         <h1> Reset Password</h1>
-
+        <h1> Hi, '.$fullName.'</h1>
         <p>Click the link to change your password</p>    <a href="'.$resetUrl.'?token='.$jwt.'">Click Here</a>
         </div>
             <br>
@@ -109,11 +120,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ';
         // Send the email
         $mail->send();
-        echo 'Email sent successfully.';
+        http_response_code(200);
+        echo json_encode(array(
+            "status"=>1,
+            "message" => "Successfully sent email"
+        ));
     } catch (Exception $e) {
         echo 'Email could not be sent. Error message: ', $mail->ErrorInfo;
     }
-    echo var_dump($_POST);
-}else{
-    echo var_dump($_POST);
+    // echo var_dump($_POST);}
+}
 }
