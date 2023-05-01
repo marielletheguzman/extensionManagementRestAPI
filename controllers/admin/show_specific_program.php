@@ -143,13 +143,13 @@
                     $invitation = $programDetails['invitation'];
 
                     if(empty($certificate)){
-                        $certificate='';
+                        $certificate='certificate.pdf';
                     }
                     if(empty($attendance)){
-                        $attendance='';
+                        $attendance='attendance.pdf';
                     }
                     if(empty($invitation)){
-                        $invitation='';
+                        $invitation='invitation.pdf';
                     }
 
                     http_response_code(200);
