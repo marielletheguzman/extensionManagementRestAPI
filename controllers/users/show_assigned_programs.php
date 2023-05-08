@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
         );
             
         //added extension programs in loop
-        $extProg = "SELECT * FROM extensionprograms WHERE id = $pid AND endDate >= DATE_ADD(NOW(), INTERVAL 1 DAY)";
+        $extProg = "SELECT * FROM extensionprograms WHERE id = $pid";
         $res = $connection->query($extProg);
         
         while($row = $res->fetch_assoc()) {
@@ -79,6 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
             $partner = $row['partner'];
             $startDate = $row['startDate'];
             $endDate = $row['endDate'];
+            if (strtotime($endDate) < time()) {
+                $status = 'Expired';
+                $query = "UPDATE extensionprograms SET status = 'Expired' WHERE id = $id";
+                $connection->query($query);
+            }else{
+                $status = 'Active';
+                $query = "UPDATE extensionprograms SET status = 'Active' WHERE id = $id";
+                $connection->query($query);
+            }
             $extensionProgram[] = array(
 
                 "id" => $id,
@@ -87,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
                 "place" => $place,
                 "additionalDetails" => $additionalDetails,
                 "partner" => $partner,
+                "status" => $status,
                 "startDate" => $startDate,
                 "endDate" => $endDate,   
     );

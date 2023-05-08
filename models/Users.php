@@ -116,7 +116,21 @@ class Users{
         }
         return array();
     }
+    public function viewProgramsLead(){
+        $query = "SELECT * FROM extensionprograms WHERE lead_id = ? AND endDate >= DATE_ADD(NOW(), INTERVAL 1 DAY)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $this->id);
     
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $num_rows = mysqli_num_rows($result);
+        if ($num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function  updateProfile(){
         $query = "UPDATE ".$this->users." SET fullname = ?, email = ?, position = ? WHERE id=?";
         $userObj = $this->conn->prepare($query);
