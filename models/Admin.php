@@ -74,12 +74,13 @@
             }
         //for admin to create a extension program 
             public function createExtensionProgram(){
-                $query = "INSERT INTO ".$this->extensionprograms." SET programTitle=?, programLead=?, place=?, additionalDetails=?, partner=?, startDate=?, endDate=?";
+                $query = "INSERT INTO ".$this->extensionprograms." SET programTitle=?, programLead=?,lead_id=?, place=?, additionalDetails=?, partner=?, startDate=?, endDate=?";
                 $extensionObj = $this->conn->prepare($query);
 
                 //sanitizing:::;
                 $programTitle = htmlspecialchars(strip_tags($this->programTitle));
                 $programLead = htmlspecialchars(strip_tags($this->programLead));
+                $lead_id = htmlspecialchars(strip_tags($this->lead_id));
                 $place = htmlspecialchars(strip_tags($this->place));
                 $additionalDetails = htmlspecialchars(strip_tags($this->additionalDetails));
                 $partner = $this->partner;
@@ -87,7 +88,7 @@
                 $endDate = htmlspecialchars(strip_tags($this->endDate));
 
                 //to binddd:::::
-                $extensionObj->bind_param("sssssss", $this->programTitle, $this->programLead, $this->place, $this->additionalDetails, $this->partner, $this->startDate, $this->endDate);
+                $extensionObj->bind_param("ssssssss", $this->programTitle, $this->programLead,$this->lead_id, $this->place, $this->additionalDetails, $this->partner, $this->startDate, $this->endDate);
                 if($extensionObj->execute()){
                     return true;
                 }return false;

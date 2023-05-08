@@ -35,7 +35,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $headers = getallheaders();
 
 
-    if(!empty($data->programTitle) && !empty($data->programLead) && !empty($data->place) && !empty($data->additionalDetails) && !empty($data->partner) && !empty($data->startDate) && !empty($data->endDate)) {
+    if(!empty($data->programTitle) && !empty($data->programLead) && !empty($data->lead_id)&& !empty($data->place) && !empty($data->additionalDetails) && !empty($data->partner) && !empty($data->startDate) && !empty($data->endDate)) {
 
     try{
         $jwt = $headers['Authorization'];
@@ -44,12 +44,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
         $adminObj->programTitle = $data->programTitle;
         $adminObj->programLead = $data->programLead;
+        $adminObj->lead_id = $data->lead_id;
         $adminObj->place = $data->place;
         $adminObj->additionalDetails = $data->additionalDetails;
         $adminObj->partner = $data->partner;
         $adminObj->startDate = $data->startDate;
         $adminObj->endDate = $data->endDate;
-
+        // echo $data->lead_id;
         if($adminObj->createExtensionProgram()){
             http_response_code(200);
             echo json_encode(array(
